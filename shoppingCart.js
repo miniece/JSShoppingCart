@@ -1,41 +1,60 @@
-class Product {
-	name;
-	price;
+class Product{
+    name;
+    cost; 
 
-	constructor(name, price) {
-		this.name = name;
-		this.price = price;
-	}
+    constructor(name, cost){
+        this.name = name; 
+        this.cost = cost;
+    }
 }
 
-products = [];
+//This inits an empty array, remember in JS arrays are loosely typed, anything can go in, anything can come out 
+//They are also dynamically sized like C# lists 
+//JS really only has arrays for collections, they are meant to fill every role collections would
+cart = [];
 
-products[0] = new Product('Apples', 4.5);
-products[1] = new Product('Bananas', 6.5);
-products[2] = new Product('Hot Dogs', 7.5);
+products = [new Product("spam", 3.99), new Product("bananas", 1.99), new Product("cabbage", .89)];
 
-let goOn = true;
+function addToCart(index){
+    let selected = products[index];
 
-while (goOn == true) {
-	let pick = prompt('Please select a product that you want 0 through ' + (products.length - 1));
-
-	let cart = [];
-
-	cart = products[pick];
-	console.log(cart);
-
-	goOn = keepRunning();
+    //Push is the same as Add in C# lists, push is a method for adding to a stack, JS has push and pops functions to allow you 
+    //to simulate Stacks
+    cart.push(selected);
+    console.log(cart);
 }
 
-function keepRunning() {
-	let answer = prompt('Would you like to add another item? Y/N');
-
-	if (answer.toLowerCase() === 'n') {
-		return false;
-	} else if (answer.toLowerCase() === 'y') {
-		return true;
-	} else {
-		console.log("I'm sorry I didn't understand that let's try again");
-		return keepRunning();
-	}
+function checkout(){
+    let total = 0; 
+    //this should override what was there with the empty string 
+    //this is so we can remove what was there previously 
+    document.getElementById("SubTotal").innerHTML ="";
+    for(let i = 0; i < cart.length; i++){
+        let p = cart[i]; 
+        console.log(p);
+        total += p.cost;
+        //We use += to add onto the element and NOT overwrite it 
+        document.getElementById("SubTotal").innerHTML += `<p>Item: ${p.name} Cost: ${p.cost} </p> 
+        <button onClick="removeItem( ${i})"> Remove ${p.name}  </button>`;
+​
+    }
+​
+    console.log(total);
+​
+    //There are many dom methods, but this is the most commonly used. Ids are meant to appear once per page so this grabs only one element 
+    //You may also grabs by HTML tag (IE all p tags ) or by css class name, but both will return arrays as they are able to appear more than once
+    //The class name and HTML tag calls tend to be used more for altering CSS, where Id is useful for inputting and outputting data.
+​
+    //There are 2 properties availiable to perform DOM manipulation, 
+    //innerHTML and innerText - innerHTML allows for editing/overriding of the HTML, innerText only changes the text and leaves the HTML alone
+​
+    let outputTotal = Math.round(total *100)/100;
+    document.getElementById("Total").innerHTML = `<h2>Total: $ ${outputTotal}</h2>`;
+}
+​
+function removeItem( index){
+    cart.splice(index, 1);
+​
+    //To redisplay the cart and it's new subtotal recall checkout 
+    checkout();
 }
